@@ -6,7 +6,8 @@ const dotenv = require('dotenv').config();
 const mongoClient =mongodb.MongoClient;
 const URL = process.env.DB;
 const DB = "Zen_Class"
-let users = [];
+
+// let users = [];
 
 //middleware
 app.use(express.json());
