@@ -94,9 +94,6 @@ app.put("/updatedpizza/:id", async function (req, res) {
       res.status(500).json({message:"something went wrong"});
    
    }
-
-
-
 })
 
 app.delete("/deletepizza/:id", async function (req, res) {
@@ -122,5 +119,69 @@ app.delete("/deletepizza/:id", async function (req, res) {
 
 
 })
+//user collection
+
+
+ 
+ app.post("/register", async function (req, res) {
+   
+   try{
+      // step 1: Create a connection between NodeJS and MongoDB
+   const connection = await mongoClient.connect(URL)
+      // step 2: Select the DB
+   const db = connection.db(DB)
+      // step 3: Select the Collection
+      // step 4: Do the Operation(Create,Update,Edit,Delete)
+   await db.collection("User").insertOne(req.body)
+      // step 5: Close the Connection
+   await connection.close()
+   
+   res.json({message:"Data inserted"});
+   
+   } catch(error){
+      res.status(500).json({message:"something went wrong"});
+   
+   }
+   
+   })
+
+
+
+ app.post("/login", async function (req, res) {
+   
+   try{
+      // step 1: Create a connection between NodeJS and MongoDB
+   const connection = await mongoClient.connect(URL)
+      // step 2: Select the DB
+   const db = connection.db(DB)
+      // step 3: Select the Collection
+      // step 4: Do the Operation(Create,Update,Edit,Delete)
+   await db.collection("User").find(req.body)
+   if (user.length > 0) {
+      const currentUser = {
+        name: user[0].name,
+        email: user[0].email,
+        isAdmin: user[0].isAdmin,
+        _id: user[0].Id,
+      };
+      res.status(200).send(currentUser);
+    } else {
+      res.status(400).json({
+        message: "Login Failed",
+      });
+    }
+   
+   // step 5: Close the Connection
+  
+      await connection.close()
+   
+   
+   
+   } catch(error){
+      res.status(500).json({message:"something went wrong"});
+   
+   }
+   
+   })
 
 app.listen(process.env.PORT||3001);
