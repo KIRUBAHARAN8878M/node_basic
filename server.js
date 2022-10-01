@@ -156,7 +156,7 @@ app.delete("/deletepizza/:id", async function (req, res) {
    const db = connection.db(DB)
       // step 3: Select the Collection
       // step 4: Do the Operation(Create,Update,Edit,Delete)
-   await db.collection("User").find({ email, password })
+   await db.collection("User").findOne(req.body)
   
    res.json({message:"Data inserted"});
     
