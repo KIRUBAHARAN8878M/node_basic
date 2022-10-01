@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require("cors");
 const app = express();
 const mongodb = require('mongodb');
+const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv').config();
 const mongoClient =mongodb.MongoClient;
 const URL = process.env.DB;
@@ -126,14 +127,16 @@ app.delete("/deletepizza/:id", async function (req, res) {
  app.post("/register", async function (req, res) {
    
    try{
-      // step 1: Create a connection between NodeJS and MongoDB
    const connection = await mongoClient.connect(URL)
-      // step 2: Select the DB
    const db = connection.db(DB)
-      // step 3: Select the Collection
-      // step 4: Do the Operation(Create,Update,Edit,Delete)
+    
+
+let salt = await bcrypt.genSalt(10);
+let hash = await bcrypt.hash(req.body.password, salt)
+
+req.body.password =hash;
    await db.collection("User").insertOne(req.body)
-      // step 5: Close the Connection
+     
    await connection.close()
    
    res.json({message:"Data inserted"});
@@ -150,22 +153,24 @@ app.delete("/deletepizza/:id", async function (req, res) {
  app.post("/login", async function (req, res) {
   
    try{
-      // step 1: Create a connection between NodeJS and MongoDB
-   const connection = await mongoClient.connect(URL)
-      // step 2: Select the DB
+      
+   const connection = await mongoClient.connect(URL)   
    const db = connection.db(DB)
-      // step 3: Select the Collection
-      // step 4: Do the Operation(Create,Update,Edit,Delete)
-   await db.collection("User").findOne(req.body)
-  
-   res.json({message:"Data inserted"});
-    
-   
-   // step 5: Close the Connection
-  
-      await connection.close()
-   
-   
+      
+   let user = await db.collection("User").findOne({email : req.body.email})
+  if(user){
+
+let compare = await bcrypt.compare(req.body.password , user.password);
+if(compare){
+   req.json({message:"Logged in successfully"});
+}else{
+   req.json({message:"Password is wrong"});
+}
+
+  }else{
+   res.status(401).json({message : "User email not found"});
+  }
+       await connection.close()
    
    } catch(error){
       res.status(500).json({message:"something went wrong"});
