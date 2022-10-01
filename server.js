@@ -148,7 +148,7 @@ app.delete("/deletepizza/:id", async function (req, res) {
 
 
  app.post("/login", async function (req, res) {
-   
+   const { email, password } = req.body;
    try{
       // step 1: Create a connection between NodeJS and MongoDB
    const connection = await mongoClient.connect(URL)
@@ -156,7 +156,7 @@ app.delete("/deletepizza/:id", async function (req, res) {
    const db = connection.db(DB)
       // step 3: Select the Collection
       // step 4: Do the Operation(Create,Update,Edit,Delete)
-   await db.collection("User").find(req.body)
+   await db.collection("User").find({ email, password })
    if (user.length > 0) {
       const currentUser = {
         name: user[0].name,
