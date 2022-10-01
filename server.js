@@ -157,20 +157,20 @@ req.body.password =hash;
    const connection = await mongoClient.connect(URL)   
    const db = connection.db(DB)
       
-   let user = await db.collection("User").findOne({email : req.body.email})
+   let user = await db.collection("User").findOne({email : req.body.email});
   if(user){
-
+console.log(req.body.password);
 let compare = await bcrypt.compare(req.body.password , user.password);
 if(compare){
    req.json({message:"Logged in successfully"});
 }else{
-   req.json({message:"Password is wrong"});
+   req.json({message:"email or Password is wrong"});
 }
 
   }else{
-   res.status(401).json({message : "User email not found"});
+   res.status(401).json({message : "User email or password wrong"});
   }
-       await connection.close()
+      
    
    } catch(error){
       res.status(500).json({message:"something went wrong"});
