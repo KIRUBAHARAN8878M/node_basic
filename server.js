@@ -9,6 +9,7 @@ const DB = "Zen_Class"
 
 // let users = [];
 
+
 //middleware
 app.use(express.json());
 app.use(cors({
