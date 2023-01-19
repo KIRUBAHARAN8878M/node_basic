@@ -9,8 +9,6 @@ const URL = process.env.DB;
 const DB = "Mongo";
 
 // let users = [];
-
-
 //middleware
 app.use(express.json());
 app.use(
